@@ -1,0 +1,45 @@
+# this is just the start of the code . the options are not in there own class 
+#but it does print nicely , its here if u need a base code 
+class RPG(object):
+    def __init__ (self,story,options_1,options_2,options_3):
+        self.story = story
+        self.options_1 = options_1
+        self.options_2 = options_2
+        self.options_3 = options_3
+#
+    @property
+    def story(self):
+        return self._story
+    @story.setter
+    def story(self, value):
+        self._story = value
+    @property
+    def options_1(self):
+        return self._options_1
+    @options_1.setter
+    def options_1(self, value):
+        self._options_1 = value
+    @property
+    def options_2(self):
+        return self._options_2
+    @options_2.setter
+    def options_2(self, value):
+        self._options_2 = value
+    @property
+    def options_3(self):
+        return self._options_3
+    @options_3.setter
+    def options_3(self, value):
+        self._options_3 = value
+    
+
+    def __str__(self):
+        story = "{}\n ".format ( self.story)
+        story += "A: "+"{}".format( self.options_1)
+        story += "B: "+"{}".format( self.options_2)
+        story += "C: "+"{}".format( self.options_3)
+        return story
+
+
+g = RPG("You are ......","you ask.....","You walk on by ....","you save the person")
+print g 
