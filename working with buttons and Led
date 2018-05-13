@@ -1,0 +1,379 @@
+############################################################################################
+# Name: group 4 
+# Date: 
+# Description: 
+###########################################################################################
+from Tkinter import *
+from random import randint
+import RPi.GPIO as GPIO
+from time import sleep
+
+# the room class
+# note that this class is fully implemented with dictionaries as illustrated in the lesson "More on Data Structures"
+class Room(object):
+        # the constructor
+        def __init__(self, name):
+                self.name = name
+       
+                self.exits = {}
+                self.items_a = []
+                self.items_b = []
+                self.items_c = []
+                self.grabbables_a = []
+                self.grabbables_b = []
+                self.grabbables_c = [] 
+
+        # getters and setters for the instance variables
+        @property
+        def name(self):
+                return self._name
+
+        @name.setter
+        def name(self, value):
+                self._name = value
+
+        @property
+        def exits(self):
+                return self._exits
+
+        @exits.setter
+        def exits(self, value):
+                self._exits = value
+
+        @property
+        def items_a(self):
+                return self._items_a
+        @items_a.setter
+        def items_a(self, value):
+                self._items_a = value
+
+        @property
+        def items_b(self):
+                return self._items_b
+        @items_b.setter
+        def items_b(self, value):
+                self._items_b = value
+
+        @property
+        def items_c(self):
+                return self._items_c
+        @items_c.setter
+        def items_c(self, value):
+                self._items_c = value
+
+        @property
+        def grabbables_a(self):
+                return self._grabbables_a
+
+        @grabbables_a.setter
+        def grabbables_a(self, value):
+                self._grabbables_a = value
+
+        @property
+        def grabbables_b(self):
+                return self._grabbables_b
+
+        @grabbables_b.setter
+        def grabbables_b(self, value):
+                self._grabbables_b = value
+
+        @property
+        def grabbables_c(self):
+                return self._grabbables_c
+
+        @grabbables_c.setter
+        def grabbables_c(self, value):
+                self._grabbables_c = value
+        
+
+        # adds an exit to the room
+        # the exit is a string (e.g., north)
+        # the room is an instance of a room
+        def addExit(self, exit, room):
+                # append the exit and room to the appropriate dictionary
+                self._exits[exit] = room
+
+        def addItem_a(self, item):
+            self._items_a.append(item)
+        def addItem_b(self, item):
+            self._items_b.append(item)
+        def addItem_c(self, item):
+            self._items_c.append(item)
+        
+
+        # adds a grabbable item to the room
+        # the item is a string (e.g., key)
+        def addGrabbable_a(self, item):
+                self._grabbables_a.append(item)
+        def delGrabbable_a(self, item):
+                self._grabbables_a.remove(item)
+
+        def addGrabbable_b(self, item):
+                self._grabbables_b.append(item)
+        def delGrabbable_b(self, item):
+                self._grabbables_b.remove(item)
+
+        def addGrabbable_c(self, item):
+                self._grabbables_c.append(item)
+        def delGrabbable_c(self, item):
+                self._grabbables_c.remove(item)
+
+    # returns a string description of the room
+        def __str__(self):
+                # first, the room name
+                s = "{}\n".format(self.name)
+                global NAME
+                NAME  = self.name
+                # this is for the take Verb {progress}.
+                # next, the items in the room
+                for item in self.items_a:
+                        s += ("A)"+ item)
+                        global ITEM_A
+                        ITEM_A = item
+                for item in self.items_b:
+                        s += ("B)" + item) 
+                        global ITEM_B
+                        ITEM_B = item
+                for item in self.items_c:
+                        s +=("C)" +item )
+                        global ITEM_C
+                        ITEM_C = item
+                s += "\n"
+                # next, the exits from the room
+                return s
+
+# the game class
+# inherits from the Frame class of Tkinter
+class Game(Frame):
+        # the constructor
+        def __init__(self, parent):
+                # call the constructor in the superclass
+                Frame.__init__(self, parent)
+
+        # creates the rooms
+        def createRooms(self):
+                # r1 through r4 are the four rooms in the mansion
+                # currentRoom is the room the player is currently in (which
+                # can be one of r1 through r4)
+
+                # create the rooms and give them meaningful names
+                # image in the current directory
+                r1 = Room("Story 1")
+                r2 = Room("Story 2")
+                r3 = Room("Story 3")
+                r4 = Room("Story 4")
+                r5 = Room("Observatory")
+                # the __init__ was asking for an imagine 
+                
+                # add exits to room 1
+                r1.addExit("down", r2)
+                # add grabbables to room 1
+                r1.addGrabbable_a("a")
+                r1.addGrabbable_b("b")
+                r1.addGrabbable_c("c")
+                # add items to room 1
+                r1.addItem_a("1.1")
+                r1.addItem_b("1.2")
+                r1.addItem_c("1.3")
+
+                r2.addExit("down", r3)
+                # add grabbables to room 1
+                r2.addGrabbable_a("a")
+                r2.addGrabbable_b("b")
+                r2.addGrabbable_c("c")
+                # add items to room 1
+                r2.addItem_a("2.1")
+                r2.addItem_b("2.2")
+                r2.addItem_c("2.3")
+
+                r3.addExit("down", r4)
+                # add grabbables to room 1
+                r3.addGrabbable_a("a")
+                r3.addGrabbable_b("b")
+                r3.addGrabbable_c("c")
+                # add items to room 1
+                r3.addItem_a("3.1")
+                r3.addItem_b("3.2")
+                r3.addItem_c("3.3")
+
+                r4.addExit("down", r5)
+                # add grabbables to room 1
+                r4.addGrabbable_a("a")
+                r4.addGrabbable_b("b")
+                r4.addGrabbable_c("c")
+                # add items to room 1
+                r4.addItem_a("4.1")
+                r4.addItem_b("4.2")
+                r4.addItem_c("4.3")
+
+                
+                # add grabbables to room 1
+                r5.addGrabbable_a("a")
+                r5.addGrabbable_b("b")
+                r5.addGrabbable_c("c")
+                # add items to room 1
+                r5.addItem_a("5.1")
+                r5.addItem_b("5.2")
+                r5.addItem_c("5.3")
+             
+                # set room 1 as the current room at the beginning of the
+                # game
+                Game.currentRoom = r1
+
+                #initialize the player's inventory
+                Game.inventory = []
+
+                
+
+        # sets up the GUI
+        def setupGUI(self):
+                
+        # organize the GUI
+                self.pack(fill=BOTH, expand=1)
+        # the widget is a Tkinter Entry
+# set its background to white and bind the return key to the
+# function process in the class
+
+# first, the frame in which the text will be placed
+                text_frame = Frame(self, width=WIDTH )
+# the widget is a Tkinter Text
+# disable it by default
+# don't let the widget control the frame's size
+                Game.text = Text(bg="lightgrey", state=DISABLED)
+                Game.text.pack(fill=Y, expand=1)
+                text_frame.pack(side=TOP, fill=X)
+                text_frame.pack_propagate(False)
+
+                a = Button(self.master, text = "ASS",command = self.A1)
+                a.pack(side= LEFT, fill = BOTH)
+
+                c = Button(self.master, text = "CUNTS",command = self.C1)
+                c.pack(side= RIGHT, fill = Y)
+
+
+                b = Button(self.master, text = "BUTTS",command = self.B1)
+                b.pack(side= BOTTOM, fill = Y)
+
+                
+                
+
+        # sets the status displayed on the right of the GUI
+        def setStatus(self, status):
+                # enable the text widget, clear it, set it, and disabled it
+                Game.text.config(state=NORMAL)
+                Game.text.delete("1.0", END)
+                
+                # otherwise, display the appropriate status
+                Game.text.insert(END,"Your story far : " + str(Game.inventory)+ "\n" +status +"\n" + str(Game.currentRoom) )
+                
+                Game.text.config(state=DISABLED)
+        # plays the game
+        def play(self):
+                
+                # add the rooms to the game
+                self.createRooms()
+                # configure the GUI
+                self.setupGUI()
+                self.setStatus("")
+                        
+ 
+        def A1(self):
+                noun = "a"
+                for grabbable_a in Game.currentRoom.grabbables_a:
+                                        # a valid grabbable item is found
+                                        if (noun == grabbable_a):
+                                              Game.inventory.append(NAME)
+                                              Game.inventory.append(ITEM_A)
+                                              noun = "down"
+                                              GPIO.output(green, GPIO.HIGH)
+                                              sleep(.1)
+                                              GPIO.output(green, GPIO.LOW)
+                                              GPIO.output(red, GPIO.LOW)
+                                              GPIO.output(blue, GPIO.LOW)
+                                              Game.currentRoom = Game.currentRoom.exits[noun]
+                response = ("Progressed" + "\n" + "Story option chosen")
+                self.setStatus(response)
+           
+        def B1(self):
+                noun = "b"
+                for grabbable_b in Game.currentRoom.grabbables_b:
+                                        # a valid grabbable item is found
+                                        if (noun == grabbable_b):
+                                              
+                                              Game.inventory.append(NAME)
+                                              Game.inventory.append(ITEM_B)
+                                              noun = "down"
+                                              GPIO.output(blue, GPIO.HIGH)
+                                              sleep(.1)
+                                              GPIO.output(green, GPIO.LOW)
+                                              GPIO.output(red, GPIO.LOW)
+                                              GPIO.output(blue, GPIO.LOW)
+                                              Game.currentRoom = Game.currentRoom.exits[noun]
+                response = ("Progressed" + "\n" + "Story option chosen")
+                self.setStatus(response)
+     
+        def C1(self):
+                noun = "c"
+                for grabbable_c in Game.currentRoom.grabbables_c:
+                                        # a valid grabbable item is found
+                                        if (noun == grabbable_c):                                              
+                                              Game.inventory.append(NAME)
+                                              Game.inventory.append(ITEM_C)
+                                              noun = "down"
+                                              GPIO.output(red, GPIO.HIGH)
+                                              sleep(.1)
+                                              GPIO.output(green, GPIO.LOW)
+                                              GPIO.output(red, GPIO.LOW)
+                                              GPIO.output(blue, GPIO.LOW)
+                                              Game.currentRoom = Game.currentRoom.exits[noun]
+                response = ("Progressed" + "\n" + "Story option chosen")
+                self.setStatus(response)
+
+                
+                
+
+                                              
+               
+                
+                
+                
+                
+
+                        
+
+##########################################################
+# the default size of the GUI is 800x600
+WIDTH = 800
+HEIGHT = 600
+button_a = 17
+button_b = 16
+button_c = 13
+red = 20
+green = 18
+blue =  19
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(button_a, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(button_b, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(button_c, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(red,GPIO.OUT)
+GPIO.setup(green,GPIO.OUT)
+GPIO.setup(blue,GPIO.OUT)
+
+
+# create the window
+try :
+        while(True):
+                window = Tk()
+                window.title("Room Adventure")
+# create the GUI as a Tkinter canvas inside the window
+                g = Game(window)
+# play the game
+                g.play()
+        
+# wait for the window to close
+                window.mainloop()
+except KeyboardInterrupt:
+# reset the GPIO pins
+    GPIO.cleanup()
+
